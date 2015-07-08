@@ -1,4 +1,6 @@
-package Catalyst::Plugin::Session::State::Stash;
+package Catalyst::Plugin::Session::State::Stash; # git description: 0.12-14-g745a242
+# ABSTRACT: Maintain session IDs using the stash
+
 use Moose;
 use 5.008;
 use MRO::Compat;
@@ -6,7 +8,7 @@ use namespace::autoclean;
 
 extends 'Catalyst::Plugin::Session::State';
 
-our $VERSION = "0.13";
+our $VERSION = '0.14';
 
 has _deleted_session_id => ( is => 'rw' );
 has _prepared => ( is => 'rw' );
@@ -34,6 +36,9 @@ sub _set_session {
 
 sub setup_session {
     my $c = shift;
+
+    $c->maybe::next::method(@_);
+
     $c->_session_plugin_config->{stash_key} ||= '_session';
 }
 
@@ -84,13 +89,20 @@ sub delete_session_id {
 
 
 1;
+
 __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Catalyst::Plugin::Session::State::Stash - Maintain session IDs using the stash
+
+=head1 VERSION
+
+version 0.14
 
 =head1 SYNOPSIS
 
@@ -154,8 +166,8 @@ The name of the hash key to use. Defaults to C<_session>.
 
 =item stash_delim
 
-If present, splits stash_key at this character to nest. E.g. delim of '/'
-and key of '123/456' will store it as $c->stash->{123}->{456}
+If present, splits C<stash_key> at this character to nest. E.g. a C<delim> of '/'
+and C<stash_key> of '123/456' will store it as $c->stash->{123}->{456}
 
 =item expires
 
@@ -163,7 +175,7 @@ How long the session should last in seconds.
 
 =back
 
-For example, you could stick this in MyApp.pm:
+For example, you could stick this in F<MyApp.pm>:
 
   __PACKAGE__->config( 'Plugin::Session' => {
      stash_key  => 'session_id',
@@ -172,12 +184,13 @@ For example, you could stick this in MyApp.pm:
 =head1 BUGS
 
 You can't delete a session then create a new one. If this is important to you,
-patches welcome. It is not important to me and fixing this for completeness
-is pretty low on my list of priorities.
+patches welcome!
 
 =head1 CAVEATS
 
 Manual work may be involved to make better use of this.
+
+=for stopwords stateful
 
 If you are writing a stateful web service with
 L<Catalyst::Plugin::Server::XMLRPC>, you will probably only have to deal with
@@ -188,22 +201,54 @@ loading, as when saving, the ID will already be on the stash.
 L<Catalyst>, L<Catalyst::Plugin::Session>, L<Catalyst::Plugin::Session::State>,
 L<Catalyst::Plugin::Session::State::Cookie> (what you probably want).
 
-=head1 AUTHORS
+=head1 AUTHOR
 
-James Laver E<lt>perl -e 'printf qw/%s@%s.com cpan jameslaver/'E<gt>
+James Laver <perl -e 'printf qw/%s@%s.com cpan jameslaver/'>
 
 =head1 CONTRIBUTORS
 
-This module is derived from L<Catalyst::Plugin::Session::State::Cookie> code.
+=over 4
 
+=item *
+This module is derived from L<Catalyst::Plugin::Session::State::Cookie> code.
 Thanks to anyone who wrote code for that.
 
+=item *
 Thanks to Kent Fredric for a patch for nested keys
 
-=head1 COPYRIGHT
+=back
 
-This program is free software, you can redistribute it and/or modify it
-under the same terms as Perl itself.
+=for stopwords Florian Ragwitz Karen Etheridge Tomas Doran James Laver
+
+=over 4
+
+=item *
+
+Florian Ragwitz <rafl@debian.org>
+
+=item *
+
+Karen Etheridge <ether@cpan.org>
+
+=item *
+
+Tomas Doran <bobtfish@bobtfish.net>
+
+=item *
+
+James Laver <jjl@baozi.local>
+
+=item *
+
+James Laver <james@jameslaver.com>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2009 by James Laver.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
-
